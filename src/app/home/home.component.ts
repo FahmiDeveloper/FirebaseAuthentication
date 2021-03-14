@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../core/auth.service';
 import { Location } from '@angular/common';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { UserService } from '../core/user.service';
+import { FirebaseUserModel } from '../core/user.model';
 
 
 @Component({
@@ -10,9 +14,40 @@ import { Location } from '@angular/common';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(public authService: AuthService,private location : Location) { }
+  user: FirebaseUserModel = new FirebaseUserModel();
+  profileForm: FormGroup;
+
+  constructor(
+    public userService: UserService,
+    public authService: AuthService,
+    private route: ActivatedRoute,
+    private location : Location,
+    private fb: FormBuilder
+  ) {
+
+  }
 
   ngOnInit(): void {
+    this.route.data.subscribe(routeData => {
+      let data = routeData['data'];
+      if (data) {
+        this.user = data;
+        this.createForm(this.user.name);
+      }
+    })
+  }
+
+  createForm(name) {
+    this.profileForm = this.fb.group({
+      name: [name, Validators.required ]
+    });
+  }
+
+  save(value){
+    this.userService.updateCurrentUser(value)
+    .then(res => {
+      console.log(res);
+    }, err => console.log(err))
   }
 
   logout(){
@@ -23,5 +58,4 @@ export class HomeComponent implements OnInit {
       console.log("Logout error", error);
     });
   }
-
 }

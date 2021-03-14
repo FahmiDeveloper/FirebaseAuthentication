@@ -20,6 +20,7 @@ import { UserService } from './core/user.service';
 import { AuthGuard } from './core/auth.guard';
 import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
+import { HomeResolver } from './home/home.resolver';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,7 @@ import { HomeComponent } from './home/home.component';
     AngularFirestoreModule, // imports firebase/firestore, only needed for database features
     AngularFireAuthModule // imports firebase/auth, only needed for auth features
   ],
-  providers: [AuthService, UserService, UserResolver, AuthGuard],
+  providers: [AuthService, UserService, UserResolver, AuthGuard, HomeResolver],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
